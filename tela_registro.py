@@ -2,20 +2,6 @@ import subprocess
 import streamlit as st
 import sqlite3
 
-# Método para criptografar uma string
-
-
-def criptografar(texto):
-    # Implemente a lógica de criptografia aqui
-    return texto
-
-# Método para descriptografar uma string
-
-
-def descriptografar(texto):
-    # Implemente a lógica de descriptografia aqui
-    return texto
-
 # Função para verificar se a senha atende aos requisitos
 
 
@@ -40,7 +26,7 @@ def verificar_nome_usuario(nome_usuario):
     cursor = conexao.cursor()
 
     cursor.execute("SELECT nome FROM usuario WHERE nome=?",
-                   (criptografar(nome_usuario),))
+                   (nome_usuario,))
     resultado = cursor.fetchone()
 
     conexao.close()
@@ -61,7 +47,7 @@ def realizar_registro(nome_usuario, senha, repetir_senha):
         return "As senhas não coincidem."
 
     cursor.execute("INSERT INTO usuario (nome, senha) VALUES (?, ?)",
-                   (criptografar(nome_usuario), criptografar(senha)))
+                   (nome_usuario, senha))
     conexao.commit()
 
     conexao.close()
@@ -81,29 +67,25 @@ def tela_registro():
     # campos de entrada
     nome_usuario = st.text_input("Nome de Usuário", max_chars=20)
     senha = st.text_input("Senha", type="password", max_chars=10)
-
-    # Verificação de senha
-    st.write(f"<small>Requisitos da senha: {'Requisitos atendidos.' if len(senha) >= 6 and any(char.isdigit() for char in senha) and any(char.islower() for char in senha) and any(char.isupper() for char in senha) else ''}</small>", unsafe_allow_html=True)
-
-    if len(senha) < 6:  # Verifica se a senha possui menos de 6 caracteres
-        st.warning("A senha deve ter no mínimo 6 caracteres.")
-    # Verifica se a senha não contém nenhuma letra maiúscula
-    if not any(char.isupper() for char in senha):
-        st.warning("A senha deve conter pelo menos uma letra maiúscula.")
-    # Verifica se a senha não contém nenhuma letra minúscula
-    if not any(char.islower() for char in senha):
-        st.warning("A senha deve conter pelo menos uma letra minúscula.")
-    # Verifica se a senha não contém nenhum número
-    if not any(char.isdigit() for char in senha):
-        st.warning("A senha deve conter pelo menos um número.")
-
-    # Campo de entrada
     repetir_senha = st.text_input(
         "Repetir Senha", type="password", max_chars=10)
 
-    if senha != repetir_senha:  # Verifica se as senhas não coincidem
-        st.warning("As senhas não coincidem.")
-
+    # Verificação de senha
+    st.write(f"<small>Requisitos de senha: {'Todos os requisitos de senha foram atendidos.' if len(senha) >= 6 and any(char.isdigit() for char in senha) and any(char.islower() for char in senha) and any(char.isupper() for char in senha) and(senha == repetir_senha) else ''}</small>", unsafe_allow_html=True)
+    if senha is not "":
+        if len(senha) < 6:  # Verifica se a senha possui menos de 6 caracteres
+            st.warning("A senha deve ter no mínimo 6 caracteres.")
+        # Verifica se a senha não contém nenhuma letra maiúscula
+        if not any(char.isupper() for char in senha):
+            st.warning("A senha deve conter pelo menos uma letra maiúscula.")
+        # Verifica se a senha não contém nenhuma letra minúscula
+        if not any(char.islower() for char in senha):
+            st.warning("A senha deve conter pelo menos uma letra minúscula.")
+        # Verifica se a senha não contém nenhum número
+        if not any(char.isdigit() for char in senha):
+            st.warning("A senha deve conter pelo menos um número.")
+        if senha != repetir_senha:  # Verifica se as senhas não coincidem
+            st.warning("As senhas não coincidem.")
 
     # Verificação e processamento do registro
     if st.button("Registrar"):
