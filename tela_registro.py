@@ -1,4 +1,3 @@
-import subprocess
 import streamlit as st
 import sqlite3
 
@@ -59,8 +58,6 @@ def realizar_registro(nome_usuario, senha, repetir_senha):
 
 def tela_registro():
     # Chama o script bandados.py para criar o banco
-    subprocess.call(["python3", "Projetodiario/banco/bandados.py"])
-
     st.title("Registro de Usuário")
     st.write("Preencha os campos abaixo para se registrar:")
 
@@ -71,7 +68,7 @@ def tela_registro():
         "Repetir Senha", type="password", max_chars=10)
 
     # Verificação de senha
-    st.write(f"<small>Requisitos de senha: {'Todos os requisitos de senha foram atendidos.' if len(senha) >= 6 and any(char.isdigit() for char in senha) and any(char.islower() for char in senha) and any(char.isupper() for char in senha) and(senha == repetir_senha) else ''}</small>", unsafe_allow_html=True)
+    st.write(f"<small>Requisitos de senha: {'Todos os requisitos de senha foram atendidos.' if (verificar_senha(senha) == False) and (senha == repetir_senha) else ''}</small>", unsafe_allow_html=True)
     if senha is not "":
         if len(senha) < 6:  # Verifica se a senha possui menos de 6 caracteres
             st.warning("A senha deve ter no mínimo 6 caracteres.")
