@@ -1,7 +1,7 @@
 import streamlit as st
 import sqlite3
 from datetime import datetime
-from tela_registro import criptografar
+
 
 # Função para verificar se o usuário está registrado no banco de dados
 
@@ -11,7 +11,7 @@ def verificar_usuario(nome_usuario, senha):
     cursor = conexao.cursor()
 
     cursor.execute("SELECT nome, senha FROM usuario WHERE nome=?",
-                   (criptografar(nome_usuario),))
+                   (nome_usuario,))
     resultado = cursor.fetchone()
 
     conexao.close()
@@ -20,7 +20,7 @@ def verificar_usuario(nome_usuario, senha):
         return False
 
     nome_registrado, senha_registrada = resultado
-    if nome_registrado == criptografar(nome_usuario) and senha_registrada == criptografar(senha):
+    if nome_registrado == nome_usuario and senha_registrada == senha:
         return True
 
     return False
@@ -43,7 +43,7 @@ def registrar_relato(nome_usuario, titulo, data, relato):
     cursor = conexao.cursor()
 
     cursor.execute("INSERT INTO relatos (nome_usuario, data_relato, texto, titulo) VALUES (?, ?, ?, ?)",
-                   (criptografar(nome_usuario), data, criptografar(relato), criptografar(titulo)))
+                   (nome_usuario, data, relato, titulo))
     conexao.commit()
 
     conexao.close()
