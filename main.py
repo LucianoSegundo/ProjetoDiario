@@ -8,7 +8,7 @@ from tela_escrita import tela_escrita
 def main():
     subprocess.call(["python3", "banco/bandados.py"])
 
-    st.title("Navegação com Streamlit")
+    st.title("Projedifun, seu diário 100% funcional")
 
     # Criando a barra lateral para a navegação
     st.sidebar.title("Menu de Navegação")
